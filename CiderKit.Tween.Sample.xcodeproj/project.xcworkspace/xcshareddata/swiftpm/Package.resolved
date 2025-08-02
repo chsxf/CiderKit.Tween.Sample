@@ -1,0 +1,15 @@
+{
+  "originHash" : "2b9860502c8a9dafaf8bfb5b5054b8e45620314f6055b30cde83810a95f87795",
+  "pins" : [
+    {
+      "identity" : "ciderkit.tween",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/chsxf/CiderKit.Tween",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d508d580272850b21ed9999092e4495504186138"
+      }
+    }
+  ],
+  "version" : 3
+}
