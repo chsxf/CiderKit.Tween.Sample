@@ -41,11 +41,27 @@ class GameScene: SKScene {
     func fadeInLabel() async {
         let tween = await CGFloat.tween(from: 0, to: 1, duration: 20)
 
-        for await updatedAlpha in tween.onUpdate {
-            await MainActor.run {
-                label?.alpha = updatedAlpha
+        let startTask = Task {
+            for await _ in tween.onStart {
+                print("Tween started")
             }
         }
+
+        let updateTask = Task {
+            for await updatedAlpha in tween.onUpdate {
+                await MainActor.run {
+                    label?.alpha = updatedAlpha
+                }
+            }
+        }
+
+        let completionTask = Task {
+            for await _ in tween.onCompletion {
+                print("Tween ended")
+            }
+        }
+
+        let _ = await (startTask.value, updateTask.value, completionTask.value)
     }
 
     func touchDown(atPoint pos : CGPoint) {
