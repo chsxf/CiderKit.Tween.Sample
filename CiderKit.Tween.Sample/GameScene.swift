@@ -58,6 +58,9 @@ class GameScene: SKScene {
         let completionTask = Task {
             for await _ in tween.onCompletion {
                 print("Tween ended")
+                await MainActor.run {
+                    label?.fontColor = .green
+                }
             }
         }
 
