@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/chsxf/CiderKit.Tween",
       "state" : {
-        "revision" : "c8c9554a779792a8bed5c9524dc9daefbea42ca6",
-        "version" : "0.1.0"
+        "branch" : "sequences",
+        "revision" : "639a1e0b7e9ad5c413dd85ff89ec7732c95a43d2"
       }
     }
   ],

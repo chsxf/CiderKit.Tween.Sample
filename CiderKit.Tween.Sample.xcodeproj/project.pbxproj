@@ -341,8 +341,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/chsxf/CiderKit.Tween";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
+				branch = sequences;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
