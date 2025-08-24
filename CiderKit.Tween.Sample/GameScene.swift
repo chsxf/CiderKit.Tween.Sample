@@ -7,7 +7,13 @@
 
 import SpriteKit
 import GameplayKit
+import Combine
 import CiderKit_Tween
+
+extension Notification.Name {
+    static let introCompleted = Self.init("introCompleted")
+    static let testCompleted = Self.init("testCompleted")
+}
 
 class GameScene: SKScene {
     
@@ -39,7 +45,7 @@ class GameScene: SKScene {
     }
 
     func fadeInLabel() async {
-        let tween = await CGFloat.tween(from: 0, to: 1, duration: 20)
+        let tween = await CGFloat.tween(from: 0, to: 1, duration: 5)
 
         let startTask = Task {
             for await _ in tween.onStart {
@@ -58,15 +64,57 @@ class GameScene: SKScene {
         let completionTask = Task {
             for await _ in tween.onCompletion {
                 print("Tween ended")
-                await MainActor.run {
-                    label?.fontColor = .green
-                }
+                NotificationCenter.default.post(name: .introCompleted, object: self)
             }
         }
 
         let _ = await (startTask.value, updateTask.value, completionTask.value)
     }
 
+    private func createUpdateTask(tween: Tween<CGPoint>) {
+        Task {
+            for await p in tween.onUpdate {
+                await MainActor.run {
+                    label?.position = p
+                }
+            }
+        }
+    }
+    
+    func loopLabelAlpha() async {
+        let tween = await CGFloat.tween(from: 1, to: 0.25, duration: 0.5, loopingType: .pingPong(loopCount: 6))
+        Task {
+            for await alpha in tween.onUpdate {
+                await MainActor.run {
+                    label?.alpha = alpha
+                }
+            }
+            NotificationCenter.default.post(name: .testCompleted, object: self)
+        }
+    }
+    
+    func animateLabelSequence() async {
+        let sequence = await Sequence()
+        
+        let firstTween = await CGPoint.tween(from: CGPoint(), to: CGPoint(x: 0, y: 100), duration: 1, easing: .inOutCubic)
+        createUpdateTask(tween: firstTween)
+        try! await sequence.append(tween: firstTween)
+        
+        let secondTween = await CGPoint.tween(from: CGPoint(x: 0, y: 100), to: CGPoint(x: 0, y: -100), duration: 2, easing: .inOutCubic, loopingType: .pingPong(loopCount: 3))
+        createUpdateTask(tween: secondTween)
+        try! await sequence.append(tween: secondTween)
+        
+        let thirdTween = await CGPoint.tween(from: CGPoint(x: 0, y: -100), to: CGPoint(), duration: 1, easing: .inOutCubic)
+        createUpdateTask(tween: thirdTween)
+        try! await sequence.append(tween: thirdTween)
+        
+        Task {
+            for await _ in await sequence.onCompletion {
+                NotificationCenter.default.post(name: .testCompleted, object: self)
+            }
+        }
+    }
+    
     func touchDown(atPoint pos : CGPoint) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
