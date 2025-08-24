@@ -12,7 +12,7 @@ import CiderKit_Tween
 
 extension Notification.Name {
     static let introCompleted = Self.init("introCompleted")
-    static let sequenceCompleted = Self.init("sequenceCompleted")
+    static let testCompleted = Self.init("testCompleted")
 }
 
 class GameScene: SKScene {
@@ -81,7 +81,19 @@ class GameScene: SKScene {
         }
     }
     
-    func animateLabel() async {
+    func loopLabelAlpha() async {
+        let tween = await CGFloat.tween(from: 1, to: 0.5, duration: 0.5, loopingType: .pingPong(loopCount: 6))
+        Task {
+            for await alpha in tween.onUpdate {
+                await MainActor.run {
+                    label?.alpha = alpha
+                    print(alpha)
+                }
+            }
+        }
+    }
+    
+    func animateLabelSequence() async {
         let sequence = await Sequence()
         
         let firstTween = await CGPoint.tween(from: CGPoint(), to: CGPoint(x: 0, y: 100), duration: 1)
@@ -98,7 +110,7 @@ class GameScene: SKScene {
         
         Task {
             for await _ in await sequence.onCompletion {
-                NotificationCenter.default.post(name: .sequenceCompleted, object: self)
+                NotificationCenter.default.post(name: .testCompleted, object: self)
             }
         }
     }

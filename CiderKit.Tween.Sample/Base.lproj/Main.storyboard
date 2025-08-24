@@ -709,23 +709,48 @@
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2vH-fw-rvB">
-                                <rect key="frame" x="13" y="13" width="124" height="32"/>
-                                <buttonCell key="cell" type="push" title="Test Sequence" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fSx-h7-IRK">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="onTestSequenceClicked:" target="XfG-lQ-9wD" id="8aC-3O-Uee"/>
-                                </connections>
-                            </button>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RwK-V4-H3n">
+                                <rect key="frame" x="20" y="20" width="230" height="20"/>
+                                <subviews>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cpD-F2-gFJ">
+                                        <rect key="frame" x="-7" y="-7" width="126" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Looping Tween" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YqR-ew-Lwh">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="onLoopingTweenClicked:" target="XfG-lQ-9wD" id="edc-Y9-hhY"/>
+                                        </connections>
+                                    </button>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2vH-fw-rvB">
+                                        <rect key="frame" x="113" y="-7" width="124" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Test Sequence" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fSx-h7-IRK">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="onTestSequenceClicked:" target="XfG-lQ-9wD" id="8aC-3O-Uee"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="2vH-fw-rvB" secondAttribute="bottom" constant="20" id="InS-36-Imx"/>
-                            <constraint firstItem="2vH-fw-rvB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="eYb-RE-cEL"/>
+                            <constraint firstItem="RwK-V4-H3n" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="M1P-Ke-4ek"/>
+                            <constraint firstAttribute="bottom" secondItem="RwK-V4-H3n" secondAttribute="bottom" constant="20" id="jzH-xC-yiu"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="buttonContainer" destination="RwK-V4-H3n" id="0Oi-rq-9cU"/>
+                        <outlet property="loopingTweenButton" destination="cpD-F2-gFJ" id="tBj-X2-A7c"/>
                         <outlet property="skView" destination="m2S-Jp-Qdl" id="qux-te-cT3"/>
                         <outlet property="testSequenceButton" destination="2vH-fw-rvB" id="Psg-iI-fpZ"/>
                     </connections>
