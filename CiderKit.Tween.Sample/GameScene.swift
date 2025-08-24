@@ -82,29 +82,29 @@ class GameScene: SKScene {
     }
     
     func loopLabelAlpha() async {
-        let tween = await CGFloat.tween(from: 1, to: 0.5, duration: 0.5, loopingType: .pingPong(loopCount: 6))
+        let tween = await CGFloat.tween(from: 1, to: 0.25, duration: 0.5, loopingType: .pingPong(loopCount: 6))
         Task {
             for await alpha in tween.onUpdate {
                 await MainActor.run {
                     label?.alpha = alpha
-                    print(alpha)
                 }
             }
+            NotificationCenter.default.post(name: .testCompleted, object: self)
         }
     }
     
     func animateLabelSequence() async {
         let sequence = await Sequence()
         
-        let firstTween = await CGPoint.tween(from: CGPoint(), to: CGPoint(x: 0, y: 100), duration: 1)
+        let firstTween = await CGPoint.tween(from: CGPoint(), to: CGPoint(x: 0, y: 100), duration: 1, easing: .inOutCubic)
         createUpdateTask(tween: firstTween)
         try! await sequence.append(tween: firstTween)
         
-        let secondTween = await CGPoint.tween(from: CGPoint(x: 0, y: 100), to: CGPoint(x: 0, y: -100), duration: 2)
+        let secondTween = await CGPoint.tween(from: CGPoint(x: 0, y: 100), to: CGPoint(x: 0, y: -100), duration: 2, easing: .inOutCubic)
         createUpdateTask(tween: secondTween)
         try! await sequence.append(tween: secondTween)
         
-        let thirdTween = await CGPoint.tween(from: CGPoint(x: 0, y: -100), to: CGPoint(), duration: 1)
+        let thirdTween = await CGPoint.tween(from: CGPoint(x: 0, y: -100), to: CGPoint(), duration: 1, easing: .inOutCubic)
         createUpdateTask(tween: thirdTween)
         try! await sequence.append(tween: thirdTween)
         
