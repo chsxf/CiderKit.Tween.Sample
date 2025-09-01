@@ -1,10 +1,3 @@
-//
-//  GameScene.swift
-//  CiderKit.Tween.Sample
-//
-//  Created by Christophe SAUVEUR on 02/08/2025.
-//
-
 import SpriteKit
 import GameplayKit
 import Combine
@@ -45,30 +38,30 @@ class GameScene: SKScene {
     }
 
     func fadeInLabel() async {
-        let tween = await CGFloat.tween(from: 0, to: 1, duration: 5)
+        guard let label else { return }
 
+        let sequence = await Sequence()
+        
+        let alphaTween = await label.fade(.fromTo(0, 1), duration: 5)
+        try! await sequence.append(tween: alphaTween)
+        
+        let colorTween = await label.tweenFontColor(.fromTo(SKColor.blue, SKColor.white), duration: 5)
+        try! await sequence.insert(at: 0, tween: colorTween)
+        
         let startTask = Task {
-            for await _ in tween.onStart {
-                print("Tween started")
-            }
-        }
-
-        let updateTask = Task {
-            for await updatedAlpha in tween.onUpdate {
-                await MainActor.run {
-                    label?.alpha = updatedAlpha
-                }
+            for await _ in await sequence.onStart {
+                print("Sequence started")
             }
         }
 
         let completionTask = Task {
-            for await _ in tween.onCompletion {
-                print("Tween ended")
+            for await _ in await sequence.onCompletion {
+                print("Sequence ended")
                 NotificationCenter.default.post(name: .introCompleted, object: self)
             }
         }
 
-        let _ = await (startTask.value, updateTask.value, completionTask.value)
+        let _ = await (startTask.value, completionTask.value)
     }
 
     private func createUpdateTask(tween: Tween<CGPoint>) {
@@ -82,30 +75,28 @@ class GameScene: SKScene {
     }
     
     func loopLabelAlpha() async {
-        let tween = await CGFloat.tween(from: 1, to: 0.25, duration: 0.5, loopingType: .pingPong(loopCount: 6))
+        guard let label else { return }
+
+        let tween = await label.fade(.to(0.25), duration: 0.5, loopingType: .pingPong(loopCount: 6))
         Task {
-            for await alpha in tween.onUpdate {
-                await MainActor.run {
-                    label?.alpha = alpha
-                }
+            for await _ in tween.onCompletion {
+                NotificationCenter.default.post(name: .testCompleted, object: self)
             }
-            NotificationCenter.default.post(name: .testCompleted, object: self)
         }
     }
     
     func animateLabelSequence() async {
+        guard let label else { return }
+        
         let sequence = await Sequence()
         
-        let firstTween = await CGPoint.tween(from: CGPoint(), to: CGPoint(x: 0, y: 100), duration: 1, easing: .inOutCubic)
-        createUpdateTask(tween: firstTween)
+        let firstTween = await label.move(.to(CGPoint(x: 0, y: 100)), duration: 1, easing: .inOutCubic)
         try! await sequence.append(tween: firstTween)
         
-        let secondTween = await CGPoint.tween(from: CGPoint(x: 0, y: 100), to: CGPoint(x: 0, y: -100), duration: 2, easing: .inOutCubic, loopingType: .pingPong(loopCount: 3))
-        createUpdateTask(tween: secondTween)
+        let secondTween = await label.move(.by(CGPoint(x: 0, y: -200)), duration: 2, easing: .inOutCubic, loopingType: .pingPong(loopCount: 3))
         try! await sequence.append(tween: secondTween)
         
-        let thirdTween = await CGPoint.tween(from: CGPoint(x: 0, y: -100), to: CGPoint(), duration: 1, easing: .inOutCubic)
-        createUpdateTask(tween: thirdTween)
+        let thirdTween = await label.move(.to(CGPoint()), duration: 1, easing: .inOutCubic)
         try! await sequence.append(tween: thirdTween)
         
         Task {

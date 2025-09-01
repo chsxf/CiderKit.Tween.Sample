@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  CiderKit.Tween.Sample
-//
-//  Created by Christophe SAUVEUR on 02/08/2025.
-//
-
-
 import Cocoa
 
 @main
