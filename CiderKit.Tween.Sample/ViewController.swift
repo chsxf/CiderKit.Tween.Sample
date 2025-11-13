@@ -70,4 +70,13 @@ class ViewController: NSViewController {
     func onTestCompleted() {
         buttonContainer.isHidden = false
     }
+    
+    @IBAction func onWaitForCompletionClicked(_ sender: NSButton) {
+        if let gameScene = skView.scene as? GameScene {
+            buttonContainer.isHidden = true
+            Task {
+                await gameScene.animateWithWaitForCompletion()
+            }
+        }
+    }
 }

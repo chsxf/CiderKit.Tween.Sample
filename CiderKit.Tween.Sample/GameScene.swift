@@ -106,6 +106,15 @@ class GameScene: SKScene {
         }
     }
     
+    func animateWithWaitForCompletion() async {
+        guard let label else { return }
+        
+        await label.move(.to(CGPoint(x: 0, y: 100)), duration: 1).waitForCompletion()
+        await label.move(.to(CGPoint()), duration: 1).waitForCompletion()
+        
+        NotificationCenter.default.post(name: .testCompleted, object: self)
+    }
+    
     func touchDown(atPoint pos : CGPoint) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
