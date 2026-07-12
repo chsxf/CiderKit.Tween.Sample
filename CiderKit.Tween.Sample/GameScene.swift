@@ -42,10 +42,10 @@ class GameScene: SKScene {
 
         let sequence = await Sequence()
         
-        let alphaTween = await label.fade(.fromTo(0, 1), duration: 5)
+        let alphaTween = await label.fade(.fromTo(0, 1), options: .init(duration: 5))
         try! await sequence.append(tween: alphaTween)
         
-        let colorTween = await label.tweenFontColor(.fromTo(SKColor.blue, SKColor.white), duration: 5)
+        let colorTween = await label.tweenFontColor(.fromTo(SKColor.blue, SKColor.white), options: .init(duration: 5))
         try! await sequence.insert(at: 0, tween: colorTween)
         
         let startTask = Task {
@@ -77,7 +77,7 @@ class GameScene: SKScene {
     func loopLabelAlpha() async {
         guard let label else { return }
 
-        let tween = await label.fade(.to(0.25), duration: 0.5, loopingType: .pingPong(loopCount: 6))
+        let tween = await label.fade(.to(0.25), options: .init(duration: 0.5, loopingType: .pingPong(loopCount: 6)))
         Task {
             for await _ in tween.onCompletion {
                 NotificationCenter.default.post(name: .testCompleted, object: self)
@@ -90,13 +90,13 @@ class GameScene: SKScene {
         
         let sequence = await Sequence()
         
-        let firstTween = await label.move(.to(CGPoint(x: 0, y: 100)), duration: 1, easing: .inOutCubic)
+        let firstTween = await label.move(.to(CGPoint(x: 0, y: 100)), options: .init(duration: 1, easing: .inOutCubic))
         try! await sequence.append(tween: firstTween)
         
-        let secondTween = await label.move(.by(CGPoint(x: 0, y: -200)), duration: 2, easing: .inOutCubic, loopingType: .pingPong(loopCount: 3))
+        let secondTween = await label.move(.by(CGPoint(x: 0, y: -200)), options: .init(duration: 2, easing: .inOutCubic, loopingType: .pingPong(loopCount: 3)))
         try! await sequence.append(tween: secondTween)
         
-        let thirdTween = await label.move(.to(CGPoint()), duration: 1, easing: .inOutCubic)
+        let thirdTween = await label.move(.to(CGPoint()), options: .init(duration: 1, easing: .inOutCubic))
         try! await sequence.append(tween: thirdTween)
         
         Task {
@@ -109,9 +109,9 @@ class GameScene: SKScene {
     func animateWithWaitForCompletion() async {
         guard let label else { return }
         
-        await label.move(.to(CGPoint(x: 0, y: 100)), duration: 1).waitForCompletion()
-        await label.move(.to(CGPoint()), duration: 1).waitForCompletion()
-        
+        await label.move(.to(CGPoint(x: 0, y: 100)), options: .init(duration: 1)).waitForCompletion()
+        await label.move(.to(CGPoint()), options: .init(duration: 1)).waitForCompletion()
+
         NotificationCenter.default.post(name: .testCompleted, object: self)
     }
     
