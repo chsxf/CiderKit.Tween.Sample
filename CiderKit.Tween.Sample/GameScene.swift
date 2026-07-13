@@ -64,22 +64,12 @@ class GameScene: SKScene {
         let _ = await (startTask.value, completionTask.value)
     }
 
-    private func createUpdateTask(tween: Tween<CGPoint>) {
-        Task {
-            for await p in tween.onUpdate {
-                await MainActor.run {
-                    label?.position = p
-                }
-            }
-        }
-    }
-    
     func loopLabelAlpha() async {
         guard let label else { return }
 
         let tween = await label.fade(.to(0.25), options: .init(duration: 0.5, loopingType: .pingPong(loopCount: 6)))
         Task {
-            for await _ in tween.onCompletion {
+            for await _ in await tween.onCompletion {
                 NotificationCenter.default.post(name: .testCompleted, object: self)
             }
         }
